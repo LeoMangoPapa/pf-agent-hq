@@ -1,0 +1,23 @@
+Agent HQ Pearl Farm - giấy phép thành phần
+==========================================
+3D models (CC0 1.0 Universal, public domain) - downloaded 2026-10-30 from official kenney.nl pages:
+ - Kenney "Furniture Kit" (https://kenney.nl/assets/furniture-kit) - desk, chairDesk, computerScreen,
+   computerKeyboard, loungeSofaLong, pottedPlant, plantSmall1, lampRoundFloor, bookcaseOpen, rugRectangle.
+   License file: assets/LICENSE-kenney-furniture-kit.txt
+ - Kenney "Mini Characters" (https://kenney.nl/assets/mini-characters) - character-female-a/b/c/d,
+   character-male-a/b/c/e (+ Textures/colormap.png, animations sit/walk).
+   License file: assets/LICENSE-kenney-mini-characters.txt
+ CC0: http://creativecommons.org/publicdomain/zero/1.0/  (credit "Kenney" optional)
+No Quaternius models used.
+
+Code library:
+ - three.js r169 (MIT License, Copyright 2010-2024 three.js authors) - bundled inline, incl. examples/jsm
+   OrbitControls, GLTFLoader, CSS2DRenderer, EffectComposer, UnrealBloomPass, OutputPass, SkeletonUtils.
+   https://github.com/mrdoob/three.js/blob/dev/LICENSE
+
+Checked, not reused (no code copied):
+ - AgentSystemLabs/agent-office - LICENSE: MIT (verified 2026-10-30)
+ - clawprowl/clawprowl - LICENSE: MIT (verified 2026-10-30)
+ Reference video https://www.youtube.com/watch?v=t0hGE-aaAds used only as visual reference (frames in ref/).
+
+Scene code (src/main.js, src/template.html): written for this project.

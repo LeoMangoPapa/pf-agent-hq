@@ -1,0 +1,102 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Agent HQ Pearl Farm</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#060914;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;color:#e6ecff;-webkit-tap-highlight-color:transparent}
+#app{position:fixed;inset:0;z-index:0}#app canvas{display:block;touch-action:none}
+.labels{position:absolute;inset:0;touch-action:none}
+.glass{background:rgba(13,18,33,.82);border:1px solid rgba(140,170,255,.16);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+#top{position:fixed;left:14px;top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;pointer-events:none;z-index:5;max-width:calc(100% - 360px)}
+#top>*{pointer-events:auto}
+.brand{padding:9px 14px;display:flex;gap:10px;align-items:center}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:#5ee7ff;box-shadow:0 0 12px #5ee7ff}
+.brand b{font-size:15px;letter-spacing:.3px}.brand small{display:block;font-size:11px;color:#8d9ac0}
+.pill{padding:8px 12px;font-size:12.5px;display:flex;gap:8px;align-items:center}
+.pill i{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399}
+#tip{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);display:none;z-index:20;padding:10px 14px;font-size:13px;color:#fff;max-width:80vw}.note.ok{color:#9ff0b5}.note.off{color:#ff9a9a}.note{padding:7px 11px;font-size:11.5px;color:#ffd38a;border-color:rgba(255,200,120,.3)}
+.card{position:fixed;z-index:5;overflow:hidden}
+.card .hd{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-weight:600;font-size:13px;cursor:pointer;user-select:none}
+.card .hd:after{content:"▾";color:#8d9ac0;transition:transform .2s}.card.collapsed .hd:after{transform:rotate(-90deg)}
+.card.collapsed .bd{display:none}
+#activity{right:14px;top:14px;width:320px}
+#act-list{list-style:none;margin:0;padding:0 14px 12px;font-size:12.5px}
+#act-list li{padding:7px 0;border-top:1px solid rgba(140,170,255,.1);color:#b8c3e6;line-height:1.35}
+#act-list li b{color:#fff}#act-list li em{float:right;font-style:normal;color:#6f7ca3;font-size:11px;margin-left:6px}
+#minimap{right:14px;bottom:14px;width:200px}
+#minimap canvas{display:block;width:172px;height:172px;margin:0 14px;cursor:pointer}
+.zb{display:flex;gap:6px;padding:10px 14px 12px}
+.zb button{flex:1;height:30px;border-radius:8px;border:1px solid rgba(140,170,255,.2);background:#141b31;color:#e6ecff;font-size:16px;cursor:pointer}
+.zb button:active{background:#22305a}
+#help{position:fixed;left:14px;bottom:14px;padding:8px 12px;font-size:11.5px;color:#8d9ac0;z-index:5}
+.room-label{z-index:2;display:flex;gap:8px;align-items:center;padding:6px 11px 6px 6px;background:rgba(10,14,26,.9);border:1px solid rgba(255,255,255,.1);border-left:3px solid var(--c);border-radius:12px;white-space:nowrap;pointer-events:none;box-shadow:0 4px 18px rgba(0,0,0,.5)}
+.room-label .ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 30%,#0b1020);font-size:15px}
+.room-label b{display:block;font-size:13px}.room-label small{font-size:11px;color:#9aa6cc;display:flex;align-items:center;gap:5px}
+.room-label small i{width:6px;height:6px;border-radius:50%;background:#34d399}
+.bot-label{z-index:1;font-size:10.5px;padding:2px 7px;border-radius:9px;background:rgba(8,11,22,.78);border:1px solid rgba(255,255,255,.08);white-space:nowrap;cursor:pointer;display:flex;gap:4px;align-items:center;color:#cfd8f5}
+.bot-label i{width:6px;height:6px;border-radius:50%}.bot-label i.on{background:#34d399;box-shadow:0 0 6px #34d399}.bot-label i.off{background:#7b839c}
+body.far .bot-label{display:none}
+body.vfar .room-label small,body.vfar .brain-label span{display:none}body.vfar .room-label{padding:3px 7px 3px 3px}body.vfar .brain-label{padding:3px 8px}
+.brain-label{text-align:center;padding:7px 14px;background:rgba(6,20,32,.85);border:1px solid rgba(94,231,255,.45);border-radius:10px;box-shadow:0 0 22px rgba(94,231,255,.25);pointer-events:none;white-space:nowrap}
+.brain-label b{display:block;color:#7fe9ff;letter-spacing:2px;font-size:13px}.brain-label span{font-size:11px;color:#a9c7d6}
+#loading{position:fixed;inset:0;display:grid;place-items:center;color:#7fe9ff;font-size:14px;z-index:9}
+@media (max-width:700px){
+ #top{left:8px;top:8px;max-width:calc(100% - 16px);gap:6px}
+ .brand{padding:7px 10px}.brand b{font-size:13.5px}.pill,.note{font-size:11px;padding:6px 9px}
+ #activity{left:8px;right:auto;top:auto;bottom:8px;width:calc(100% - 150px)}
+ #activity .hd{padding:9px 11px;font-size:12px}#act-list{font-size:11.5px;max-height:34vh;overflow:auto}
+ #minimap{right:8px;bottom:8px;width:112px}#minimap .hd{padding:8px 10px;font-size:12px}
+ #minimap canvas{width:92px;height:92px;margin:0 10px}.zb{padding:8px 10px 10px;gap:4px}.zb button{height:28px}
+ #help{display:none}
+ .room-label{padding:4px 8px 4px 4px;gap:6px}.room-label .ic{width:22px;height:22px;font-size:12px}.room-label b{font-size:11.5px}.room-label small{font-size:10px}
+ .bot-label{font-size:9.5px;padding:1px 5px}
+ .brain-label b{font-size:11px}.brain-label span{font-size:9.5px}
+}
+#btn-task{padding:9px 14px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;font-family:inherit;border-color:rgba(94,231,255,.4)}#btn-task:hover{background:rgba(30,45,80,.9)}
+.room-label{pointer-events:auto!important;cursor:pointer}
+#task{position:fixed;left:14px;top:78px;width:340px;max-height:calc(100% - 140px);overflow:auto;z-index:15;display:none;padding:12px 14px}
+#task .th{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px}#task .th button{background:none;border:0;color:#8d9ac0;font-size:18px;cursor:pointer}
+#tk-ctx{font-size:11px;color:#8d9ac0;margin:2px 0 8px}
+#task label{font-size:11.5px;color:#9aa6cc;display:block;margin:6px 0 4px}
+#task select,#task textarea{width:100%;background:#0b1122;color:#e6ecff;border:1px solid rgba(140,170,255,.22);border-radius:9px;padding:8px 10px;font:inherit;font-size:13px}
+#task textarea{min-height:84px;resize:vertical}
+.tk-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px}
+#tk-n{font-size:11px;color:#6f7ca3}#tk-msg{font-size:11.5px;color:#ffd38a;flex:1}
+#tk-send{background:linear-gradient(135deg,#2f6bff,#5ee7ff);border:0;color:#fff;font-weight:700;padding:8px 18px;border-radius:9px;cursor:pointer;font-size:13px}#tk-send:disabled{opacity:.5}
+#task h4{margin:12px 0 4px;font-size:12.5px;border-top:1px solid rgba(140,170,255,.12);padding-top:10px}
+#tk-list{list-style:none;margin:0;padding:0;font-size:12px}
+#tk-list li{padding:6px 0;border-top:1px solid rgba(140,170,255,.08);color:#b8c3e6}#tk-list li.e{color:#6f7ca3}
+#tk-list li b{color:#fff}#tk-list li em{float:right;font-style:normal;color:#6f7ca3;font-size:10.5px}#tk-list li div{margin-top:2px;word-break:break-word;white-space:pre-wrap}
+.st{font-size:10px;padding:1px 6px;border-radius:7px;margin-right:6px;background:#2a3350}.st.s,.st.p{background:#1e3a6b;color:#9cc4ff}.st.d{background:#5a4510;color:#ffd38a}.st.x{background:#11452d;color:#9ff0b5}.st.f{background:#5a1a1a;color:#ff9a9a}
+#btn-blk{padding:9px 12px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;font-family:inherit}
+#blk-n{display:inline-block;min-width:20px;padding:1px 6px;border-radius:9px;background:#2a3350;font-size:11.5px;text-align:center}#blk-n.on{background:#e5484d;box-shadow:0 0 10px rgba(229,72,77,.6)}
+#blk-list{list-style:none;margin:0;padding:0;font-size:12px}
+#blk-list li{margin:6px 0;padding:8px 10px;border-radius:10px;background:rgba(229,72,77,.08);border:1px solid rgba(229,72,77,.25);color:#c9d2ef;line-height:1.4}#blk-list li.e{background:none;border:0;color:#6f7ca3;padding:4px 0}
+#blk-list li b{color:#fff}#blk-list li em{float:right;font-style:normal;color:#ff9a9a;font-size:10.5px}
+#blk-list .t{color:#ffd0d0;font-weight:600;margin:2px 0}#blk-list .k{color:#8d9ac0}#blk-list .a{color:#ffd38a}
+#blk-list button{margin-top:6px;background:#11452d;color:#9ff0b5;border:1px solid rgba(52,211,153,.4);border-radius:8px;padding:4px 10px;font-size:11.5px;cursor:pointer}
+@media (max-width:700px){#btn-blk{padding:7px 9px;font-size:12px}#task{left:8px;right:8px;width:auto;top:auto;bottom:8px;max-height:72vh;z-index:30}#btn-task{padding:7px 10px;font-size:12px}}
+</style></head><body>
+<div id="app"></div>
+<div id="top">
+ <div class="brand glass"><span class="dot"></span><div><b>Agent HQ Pearl Farm</b><small>Văn phòng bot AI</small></div></div>
+ <div class="pill glass"><i></i><span id="g-count">…</span></div>
+ <button id="btn-task" class="glass">📝 Giao việc</button>
+ <button id="btn-blk" class="glass">⛔ Việc kẹt <span id="blk-n">…</span></button>
+ <div id="upd" class="note glass">… đang tải trạng thái</div>
+</div>
+<div id="tip" class="glass"></div>
+<script>window.PF_HQ={api:"/*API*/",key:"/*RKEY*/"};</script>
+<div id="activity" class="card glass"><div class="hd">⚡ Hoạt động gần đây</div><div class="bd"><ul id="act-list"></ul></div></div>
+<div id="minimap" class="card glass"><div class="hd">🗺 Bản đồ</div><div class="bd"><canvas width="344" height="344"></canvas>
+<div class="zb"><button id="zout" title="Thu nhỏ">−</button><button id="zhome" title="Về giữa">⌂</button><button id="zin" title="Phóng to">+</button></div></div></div>
+<div id="help" class="glass">Kéo để xoay · cuộn/chụm để zoom · chạm nhân vật để đổi Đang làm/Rảnh</div>
+<div id="task" class="glass"><div class="th">📝 Giao việc<button id="tk-x" title="Đóng">✕</button></div><div id="tk-ctx"></div>
+<form id="tk-form"><label for="tk-to">Người nhận</label><select id="tk-to"></select>
+<label for="tk-text">Nội dung công việc</label><textarea id="tk-text" maxlength="1000" placeholder="Mô tả việc cần làm…"></textarea>
+<div class="tk-row"><span id="tk-n">0/1000</span><span id="tk-msg"></span><button id="tk-send">Gửi</button></div></form>
+<h4>Việc đã giao</h4><ul id="tk-list"></ul>
+<h4 id="blk-h">⛔ Việc kẹt chờ bệ hạ xử lý</h4><ul id="blk-list"></ul></div>
+<div id="loading">Đang tải văn phòng…</div>
+<script>/*MODELS*/</script>
+<script>/*APP*/</script>
+</body></html>
